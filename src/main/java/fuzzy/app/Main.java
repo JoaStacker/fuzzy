@@ -9,7 +9,7 @@ import net.sourceforge.jFuzzyLogic.FunctionBlock;
 public class Main {
     public static void main(String[] args) {
         // Load from 'FCL' file
-        String fileName = "fcl/tipper.fcl";
+        String fileName = "fcl/video_quality_regulator.fcl";
         FIS fis = FIS.load(fileName,true);
 
         // Error while loading?
@@ -19,23 +19,25 @@ public class Main {
         }
 
         // Access the function block
-        FunctionBlock functionBlock = fis.getFunctionBlock("tipper");
+        FunctionBlock functionBlock = fis.getFunctionBlock("video_quality_regulator");
 
         // Show
         JFuzzyChart.get().chart(functionBlock);
 
         // Set inputs
-        fis.setVariable("service", 3);
-        fis.setVariable("food", 7);
+        fis.setVariable("buffer_size", 900);      // Valor en KB
+        fis.setVariable("download_speed", 15);    // Valor en Mbps
+        fis.setVariable("latency", 40);          // Valor en ms
+        fis.setVariable("packet_loss", 2);        // Valor en %
+
 
         // Evaluate
         fis.evaluate();
 
         // Show output variable's chart
-        Variable tip = functionBlock.getVariable("tip");
-        JFuzzyChart.get().chart(tip, tip.getDefuzzifier(), true);
+        Variable video_resolution = functionBlock.getVariable("video_resolution");
+        System.out.println("Video resolution: " + video_resolution.getValue());
+        JFuzzyChart.get().chart(video_resolution, video_resolution.getDefuzzifier(), true);
 
-        // Print ruleSet
-        System.out.println(fis);
     }
 }
