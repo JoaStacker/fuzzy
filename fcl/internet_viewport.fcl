@@ -1,0 +1,60 @@
+FUNCTION_BLOCK internet_viewport_fls 
+
+VAR_INPUT
+    internet_performance : REAL;  // escala de 0 a 10
+    viewport_size : REAL;         // altura en píxeles (0 a 1080)
+END_VAR
+
+VAR_OUTPUT
+    video_resolution : REAL;      // escala de 0 a 1080 (resolución vertical)
+END_VAR
+
+FUZZIFY internet_performance
+    TERM bajo := (0, 1) (2, 1) (4, 0);
+    TERM medio := (3, 0) (5, 1) (7, 0);
+    TERM alto := (6, 0) (8, 1) (10, 1);
+END_FUZZIFY
+
+FUZZIFY viewport_size
+    TERM bajo := (0, 1) (240, 1) (420, 0);
+    TERM medio := (240, 0) (420, 1) (630, 0);
+    TERM alto := (420, 0) (630, 1) (1080, 1);
+END_FUZZIFY
+
+FUZZIFY video_resolution
+    TERM muy_baja := (0, 1) (240, 1) (300, 0);
+    TERM baja := (300, 0) (360, 1) (420, 0);
+	TERM media := (420, 0) (480,1) (590, 0);
+    TERM alta := (590, 0) (720, 1) (900, 0);
+    TERM muy_alta := (900, 0) (1080, 1);
+END_FUZZIFY
+
+DEFUZZIFY video_resolution
+    TERM muy_baja := (0, 1) (240, 1) (300, 0);
+    TERM baja := (300, 0) (360, 1) (420, 0);
+	TERM media := (420, 0) (480,1) (590, 0);
+    TERM alta := (590, 0) (720, 1) (900, 0);
+    TERM muy_alta := (900, 0) (1080, 1);
+    METHOD : LM;
+    DEFAULT := 360;
+END_DEFUZZIFY
+
+RULEBLOCK No1
+    AND : MIN;
+    ACT : MIN;
+    ACCU : MAX;
+
+    RULE 1 : IF internet_performance IS bajo AND viewport_size IS bajo THEN video_resolution IS muy_baja;
+    RULE 2 : IF internet_performance IS bajo AND viewport_size IS medio THEN video_resolution IS muy_baja;
+    RULE 3 : IF internet_performance IS bajo AND viewport_size IS alto THEN video_resolution IS baja;
+
+    RULE 4 : IF internet_performance IS medio AND viewport_size IS bajo THEN video_resolution IS baja;
+    RULE 5 : IF internet_performance IS medio AND viewport_size IS medio THEN video_resolution IS media;
+    RULE 6 : IF internet_performance IS medio AND viewport_size IS alto THEN video_resolution IS media;
+
+    RULE 7 : IF internet_performance IS alto AND viewport_size IS bajo THEN video_resolution IS media;
+    RULE 8 : IF internet_performance IS alto AND viewport_size IS medio THEN video_resolution IS alta;
+    RULE 9 : IF internet_performance IS alto AND viewport_size IS alto THEN video_resolution IS muy_alta;
+END_RULEBLOCK
+
+END_FUNCTION_BLOCK

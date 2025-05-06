@@ -1,43 +1,33 @@
 package fuzzy.app;
-import net.sourceforge.jFuzzyLogic.FIS;
-import net.sourceforge.jFuzzyLogic.plot.JFuzzyChart;
-import net.sourceforge.jFuzzyLogic.rule.*;
-import net.sourceforge.jFuzzyLogic.FunctionBlock;
+import fuzzy.app.InputVariable;
+import fuzzy.app.FuzzyLogicSystem;
 
-//TIP To <b>Run</b> code, press <shortcut actionId="Run"/> or
-// click the <icon src="AllIcons.Actions.Execute"/> icon in the gutter.
 public class Main {
     public static void main(String[] args) {
-        // Load from 'FCL' file
-        String fileName = "fcl/video_quality_regulator.fcl";
-        FIS fis = FIS.load(fileName,true);
+		InputVariable[] inputs;
 
-        // Error while loading?
-        if( fis == null ) {
-            System.err.println("Can't load file: '" + fileName + "'");
-            return;
-        }
+		InputVariable downloadSpeed = new InputVariable("download_speed", 4);
+		InputVariable packetNotLoss = new InputVariable("packet_not_loss", 100);
+		inputs = new InputVariable[]{ downloadSpeed, packetNotLoss }; 
 
-        // Access the function block
-        FunctionBlock functionBlock = fis.getFunctionBlock("video_quality_regulator");
+		FuzzyLogicSystem downloadPacketsFLS = new FuzzyLogicSystem("download_packets", inputs, "throughput_quality");
 
-        // Show
-        JFuzzyChart.get().chart(functionBlock);
+		InputVariable throughputQuality = new InputVariable("throughput_quality", downloadPacketsFLS.getResult());
+		InputVariable bufferSize = new InputVariable("buffer_size", 20);
+		inputs = new InputVariable[]{ throughputQuality, bufferSize }; 
 
-        // Set inputs
-        fis.setVariable("buffer_size", 900);      // Valor en KB
-        fis.setVariable("download_speed", 15);    // Valor en Mbps
-        fis.setVariable("latency", 40);          // Valor en ms
-        fis.setVariable("packet_loss", 2);        // Valor en %
+		FuzzyLogicSystem throughputBufferFLS = new FuzzyLogicSystem("throughput_buffer", inputs, "internet_performance");
+		
+		InputVariable internetPerformance = new InputVariable("internet_performance", throughputBufferFLS.getResult());
+		InputVariable viewportSize = new InputVariable("viewport_size", 1000);
+		inputs = new InputVariable[]{ internetPerformance, viewportSize }; 
 
+		FuzzyLogicSystem resolutionFLS = new FuzzyLogicSystem("internet_viewport", inputs, "video_resolution");
 
-        // Evaluate
-        fis.evaluate();
+		System.out.println("Video resolution: " + resolutionFLS.getResult());
 
-        // Show output variable's chart
-        Variable video_resolution = functionBlock.getVariable("video_resolution");
-        System.out.println("Video resolution: " + video_resolution.getValue());
-        JFuzzyChart.get().chart(video_resolution, video_resolution.getDefuzzifier(), true);
-
+		downloadPacketsFLS.getCharts();
+		throughputBufferFLS.getCharts();
+		resolutionFLS.getCharts();
     }
 }

@@ -1,0 +1,56 @@
+FUNCTION_BLOCK throughput_buffer_fls
+
+VAR_INPUT
+    throughput_quality : REAL;  // escala de 0 a 10
+    buffer_size : REAL;         // en segundos (0 a 40)
+END_VAR
+
+VAR_OUTPUT
+    internet_performance : REAL;  // escala de 0 a 10
+END_VAR
+
+FUZZIFY throughput_quality
+    TERM bajo := (0, 1) (1.5, 1) (4, 0);
+    TERM medio := (1.5, 0) (4, 1) (5, 1) (7.5, 0);
+    TERM alto := (5, 0) (7.5, 1) (10, 1);
+END_FUZZIFY
+
+FUZZIFY buffer_size
+    TERM bajo := (0, 1) (10, 1) (15, 0);
+    TERM medio := (10, 0) (15, 1) (22, 0);
+    TERM alto := (15, 0) (22, 1) (40, 1);
+END_FUZZIFY
+
+FUZZIFY internet_performance
+    TERM bajo := (0, 1) (1.5, 1) (4, 0);
+    TERM medio := (1.5, 0) (4, 1) (5, 1) (7.5, 0);
+    TERM alto := (5, 0) (7.5, 1) (10, 1);
+END_FUZZIFY
+
+DEFUZZIFY internet_performance
+    TERM bajo := (0, 1) (1.5, 1) (4, 0);
+    TERM medio := (1.5, 0) (4, 1) (5, 1) (7.5, 0);
+    TERM alto := (5, 0) (7.5, 1) (10, 1);
+    METHOD : COG;
+    DEFAULT := 0;
+END_DEFUZZIFY
+
+RULEBLOCK No1
+    AND : MIN;
+    ACT : MIN;
+    ACCU : MAX;
+
+    RULE 1 : IF throughput_quality IS bajo AND buffer_size IS bajo THEN internet_performance IS bajo;
+    RULE 2 : IF throughput_quality IS bajo AND buffer_size IS medio THEN internet_performance IS bajo;
+    RULE 3 : IF throughput_quality IS bajo AND buffer_size IS alto THEN internet_performance IS medio;
+
+    RULE 4 : IF throughput_quality IS medio AND buffer_size IS bajo THEN internet_performance IS bajo;
+    RULE 5 : IF throughput_quality IS medio AND buffer_size IS medio THEN internet_performance IS medio;
+    RULE 6 : IF throughput_quality IS medio AND buffer_size IS alto THEN internet_performance IS alto;
+
+    RULE 7 : IF throughput_quality IS alto AND buffer_size IS bajo THEN internet_performance IS medio;
+    RULE 8 : IF throughput_quality IS alto AND buffer_size IS medio THEN internet_performance IS alto;
+    RULE 9 : IF throughput_quality IS alto AND buffer_size IS alto THEN internet_performance IS alto;
+END_RULEBLOCK
+
+END_FUNCTION_BLOCK

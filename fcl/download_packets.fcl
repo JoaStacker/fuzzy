@@ -1,0 +1,56 @@
+FUNCTION_BLOCK download_packets_fls
+
+VAR_INPUT
+    download_speed : REAL;       // en Mbps (0 a 10)
+    packet_not_loss : REAL;      // en porcentaje (85 a 100)
+END_VAR
+
+VAR_OUTPUT
+    throughput_quality : REAL;   // escala de 0 a 10
+END_VAR
+
+FUZZIFY download_speed
+    TERM bajo := (0, 1) (2, 1) (4, 0);
+    TERM medio := (2, 0) (4, 1) (7, 0);
+    TERM alto := (4, 0) (7, 1) (10, 1);
+END_FUZZIFY
+
+FUZZIFY packet_not_loss
+    TERM bajo := (85, 1) (88, 1) (94, 0);
+    TERM medio := (88, 0) (94, 1) (98, 0);
+    TERM alto := (94, 0) (98, 1) (100, 1);
+END_FUZZIFY
+
+FUZZIFY throughput_quality
+    TERM bajo := (0, 1) (1.5, 1) (3, 0);
+    TERM medio := (2, 0) (4, 1) (6, 0);
+    TERM alto := (5, 0) (7.5, 1) (10, 1);
+END_FUZZIFY
+
+DEFUZZIFY throughput_quality
+    TERM bajo := (0, 1) (1.5, 1) (4, 0);
+    TERM medio := (1.5, 0) (4, 1) (5, 1) (7.5, 0);
+    TERM alto := (5, 0) (7.5, 1) (10, 1);
+    METHOD : COG;
+    DEFAULT := 0;
+END_DEFUZZIFY
+
+RULEBLOCK No1
+    AND : MIN;
+    ACT : MIN;
+    ACCU : MAX;
+
+    RULE 1 : IF download_speed IS bajo AND packet_not_loss IS bajo THEN throughput_quality IS bajo;
+    RULE 2 : IF download_speed IS bajo AND packet_not_loss IS medio THEN throughput_quality IS bajo;
+    RULE 3 : IF download_speed IS bajo AND packet_not_loss IS alto THEN throughput_quality IS bajo;
+
+    RULE 4 : IF download_speed IS medio AND packet_not_loss IS bajo THEN throughput_quality IS bajo;
+    RULE 5 : IF download_speed IS medio AND packet_not_loss IS medio THEN throughput_quality IS bajo;
+    RULE 6 : IF download_speed IS medio AND packet_not_loss IS alto THEN throughput_quality IS medio;
+
+    RULE 7 : IF download_speed IS alto AND packet_not_loss IS bajo THEN throughput_quality IS bajo;
+    RULE 8 : IF download_speed IS alto AND packet_not_loss IS medio THEN throughput_quality IS medio;
+    RULE 9 : IF download_speed IS alto AND packet_not_loss IS alto THEN throughput_quality IS alto;
+END_RULEBLOCK
+
+END_FUNCTION_BLOCK
