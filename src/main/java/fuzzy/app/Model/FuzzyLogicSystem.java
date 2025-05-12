@@ -1,4 +1,4 @@
-package fuzzy.app;
+package fuzzy.app.Model;
 import net.sourceforge.jFuzzyLogic.FIS;
 import net.sourceforge.jFuzzyLogic.plot.JFuzzyChart;
 import net.sourceforge.jFuzzyLogic.rule.*;

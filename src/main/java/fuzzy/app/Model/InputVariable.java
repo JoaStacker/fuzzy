@@ -1,4 +1,4 @@
-package fuzzy.app;
+package fuzzy.app.Model;
 
 public class InputVariable{
 	
