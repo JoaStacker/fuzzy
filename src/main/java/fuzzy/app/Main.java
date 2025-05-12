@@ -1,6 +1,7 @@
 package fuzzy.app;
 import fuzzy.app.InputVariable;
 import fuzzy.app.FuzzyLogicSystem;
+import fuzzy.app.UserInterface;
 
 public class Main {
     public static void main(String[] args) {
@@ -29,5 +30,8 @@ public class Main {
 		downloadPacketsFLS.getCharts();
 		throughputBufferFLS.getCharts();
 		resolutionFLS.getCharts();
+
+		UserInterface ui = new UserInterface();
+		ui.setVisible(true);
     }
 }
