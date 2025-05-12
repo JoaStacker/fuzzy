@@ -27,7 +27,23 @@ public class ResolutionFLS {
         internetViewportFLS = new FuzzyLogicSystem("internet_viewport", inputs, "video_resolution");
 
         double result = internetViewportFLS.getResult();
-        RESOLUTIONS resolution = RESOLUTIONS.LOW;
+        RESOLUTIONS resolution = getResolution(result);
         return resolution;
+    }
+
+    private RESOLUTIONS getResolution(double result) {
+        if (result >= 0 && result <= 300) {
+            return RESOLUTIONS.VERY_LOW;
+        }
+        if (result > 300 && result <= 420) {
+            return RESOLUTIONS.LOW;
+        }
+        if (result > 420 && result <= 590) {
+            return RESOLUTIONS.MEDIUM;
+        }
+        if (result > 590 && result <= 900) {
+            return RESOLUTIONS.HIGH;
+        }
+        return RESOLUTIONS.VERY_HIGH;
     }
 }

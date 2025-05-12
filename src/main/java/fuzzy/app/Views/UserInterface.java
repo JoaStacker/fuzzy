@@ -1,5 +1,5 @@
 package fuzzy.app.Views;
-
+import fuzzy.app.Controllers.UIController;
 import javax.swing.*;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
@@ -20,8 +20,11 @@ public class UserInterface extends JFrame {
     private JLabel bufferSizeLabel;
     private JLabel viewportSizeLabel;
     private ImageIcon[] resolutionImages;
+    private ChangeListener sliderChangeListener;
+    private UIController controller;
 
-    public UserInterface(int numberOfResolutions, double downloadSpeed, double packetNotLoss, double bufferSize, int viewportSize) {
+    public UserInterface(UIController controller, int numberOfResolutions, double downloadSpeed, double packetNotLoss, double bufferSize, int viewportSize) {
+        this.controller = controller;
         setTitle("Video Resolution Fuzzy System");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLayout(new BorderLayout(10, 10));
@@ -37,7 +40,7 @@ public class UserInterface extends JFrame {
         resolutionPanel = new JPanel(new BorderLayout(0, 10));
 
         // Initialize sliders
-        downloadSpeedSlider = createSlider("Download Speed (Mbps)", 0, 10, (int) downloadSpeed);
+        downloadSpeedSlider = createSlider("Download Speed (Kbps)", 0, 5000, (int) downloadSpeed);
         packetNotLossSlider = createSlider("Packet Not Loss (%)", 0, 100, (int) packetNotLoss);
         bufferSizeSlider = createSlider("Buffer Size (s)", 0, 40, (int) bufferSize);
         viewportSizeSlider = createSlider("Viewport Size (px)", 0, 2000, viewportSize);
@@ -57,7 +60,7 @@ public class UserInterface extends JFrame {
         resolutionPanel.add(resolutionLabel, BorderLayout.SOUTH);
 
         //Initialize labels
-        downloadSpeedLabel = new JLabel("Download Speed: " + downloadSpeed + " Mbps", SwingConstants.CENTER);
+        downloadSpeedLabel = new JLabel("Download Speed: " + downloadSpeed + " Kbps", SwingConstants.CENTER);
         packetNotLossLabel = new JLabel("Packet Not Loss: " + packetNotLoss + "%", SwingConstants.CENTER);
         bufferSizeLabel = new JLabel("Buffer Size: " + bufferSize + " s", SwingConstants.CENTER);
         viewportSizeLabel = new JLabel("Viewport Size: " + viewportSize + " px", SwingConstants.CENTER);
@@ -75,6 +78,21 @@ public class UserInterface extends JFrame {
 
         //Add main panel to frame
         add(mainPanel);
+
+        //Create change listener
+        sliderChangeListener = new ChangeListener() {
+            @Override
+            public void stateChanged(ChangeEvent e) {
+                updateLabel((JSlider) e.getSource());
+                controller.updateResolution(downloadSpeedSlider.getValue(), packetNotLossSlider.getValue(), bufferSizeSlider.getValue(), viewportSizeSlider.getValue());
+            }
+        };
+
+        //Add change listener to sliders
+        downloadSpeedSlider.addChangeListener(sliderChangeListener);
+        packetNotLossSlider.addChangeListener(sliderChangeListener);
+        bufferSizeSlider.addChangeListener(sliderChangeListener);
+        viewportSizeSlider.addChangeListener(sliderChangeListener);
 
         // Load resolution images
         loadImages(numberOfResolutions);
@@ -105,12 +123,12 @@ public class UserInterface extends JFrame {
         resolutionLabel.setText("Current Resolution: " + resolutionName);
     }
 
-    private void updateLabel(JSlider source) {
+    public void updateLabel(JSlider source) {
         int value = source.getValue();
         String label = source.getName();
         switch (label) {
-            case "Download Speed (Mbps)":
-                downloadSpeedLabel.setText(String.format("Download Speed: %d Mbps", value));
+            case "Download Speed (Kbps)":
+                downloadSpeedLabel.setText(String.format("Download Speed: %d Kbps", value));
                 break;
             case "Packet Not Loss (%)":
                 packetNotLossLabel.setText(String.format("Packet Not Loss: %d%%", value));

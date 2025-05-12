@@ -9,14 +9,14 @@ public class UIController {
 
     public UIController(double downloadSpeed, double packetNotLoss, double bufferSize, int viewportSize) {
         resolutionFLS = new ResolutionFLS();
-        ui = new UserInterface(RESOLUTIONS.values().length, downloadSpeed, packetNotLoss, bufferSize, viewportSize);
+        ui = new UserInterface(this, RESOLUTIONS.values().length, downloadSpeed, packetNotLoss, bufferSize, viewportSize);
         ui.setLocationRelativeTo(null);
         updateResolution(downloadSpeed, packetNotLoss, bufferSize, viewportSize);
         ui.setVisible(true);
     }
 
-    private void updateResolution(double downloadSpeed, double packetNotLoss, double bufferSize, int viewportSize) {
-        RESOLUTIONS resolution = resolutionFLS.run(downloadSpeed, packetNotLoss, bufferSize, viewportSize);
+    public void updateResolution(double downloadSpeedKbps, double packetNotLoss, double bufferSize, int viewportSize) {
+        RESOLUTIONS resolution = resolutionFLS.run(downloadSpeedKbps / 1000, packetNotLoss, bufferSize, viewportSize);
         ui.updateResolution(resolution.toString(), resolution.ordinal());
     }
 }
