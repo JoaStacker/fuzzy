@@ -1,7 +1,7 @@
 FUNCTION_BLOCK download_packets_fls
 
 VAR_INPUT
-    download_speed : REAL;       // en Mbps (0 a 10)
+    download_speed : REAL;       // en Kbps (0 a 10)
     packet_not_loss : REAL;      // en porcentaje (85 a 100)
 END_VAR
 
@@ -10,13 +10,13 @@ VAR_OUTPUT
 END_VAR
 
 FUZZIFY download_speed
-    TERM bajo := (0, 1) (2, 1) (4, 0);
-    TERM medio := (2, 0) (4, 1) (7, 0);
-    TERM alto := (4, 0) (7, 1) (10, 1);
+    TERM bajo := (0, 1) (660, 0);
+    TERM medio := (450, 0) (980, 1) (1500, 0);
+    TERM alto := (1042, 0) (1500, 1) (5000, 1);
 END_FUZZIFY
 
 FUZZIFY packet_not_loss
-    TERM bajo := (85, 1) (88, 1) (94, 0);
+    TERM bajo := (0, 1) (88, 1) (94, 0);
     TERM medio := (88, 0) (94, 1) (98, 0);
     TERM alto := (94, 0) (98, 1) (100, 1);
 END_FUZZIFY

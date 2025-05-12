@@ -28,7 +28,14 @@ public class ResolutionFLS {
 
         double result = internetViewportFLS.getResult();
         RESOLUTIONS resolution = getResolution(result);
+
         return resolution;
+    }
+
+    public void getCharts(){
+        downloadPacketsFLS.getCharts();
+        throughputBufferFLS.getCharts();
+        internetViewportFLS.getCharts();
     }
 
     private RESOLUTIONS getResolution(double result) {

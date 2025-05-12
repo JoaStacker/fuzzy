@@ -16,9 +16,9 @@ FUZZIFY throughput_quality
 END_FUZZIFY
 
 FUZZIFY buffer_size
-    TERM bajo := (0, 1) (10, 1) (15, 0);
-    TERM medio := (10, 0) (15, 1) (22, 0);
-    TERM alto := (15, 0) (22, 1) (40, 1);
+    TERM bajo := (0, 1) (22, 0);
+    TERM medio := (10, 0) (24, 1) (40, 0);
+    TERM alto := (26, 0) (60, 1);
 END_FUZZIFY
 
 FUZZIFY internet_performance
@@ -36,21 +36,21 @@ DEFUZZIFY internet_performance
 END_DEFUZZIFY
 
 RULEBLOCK No1
-    AND : MIN;
+    OR : MIN;
     ACT : MIN;
     ACCU : MAX;
 
-    RULE 1 : IF throughput_quality IS bajo AND buffer_size IS bajo THEN internet_performance IS bajo;
-    RULE 2 : IF throughput_quality IS bajo AND buffer_size IS medio THEN internet_performance IS bajo;
-    RULE 3 : IF throughput_quality IS bajo AND buffer_size IS alto THEN internet_performance IS medio;
+    RULE 1 : IF throughput_quality IS bajo OR buffer_size IS bajo THEN internet_performance IS bajo;
+    RULE 2 : IF throughput_quality IS bajo OR buffer_size IS medio THEN internet_performance IS bajo;
+    RULE 3 : IF throughput_quality IS bajo OR buffer_size IS alto THEN internet_performance IS medio;
 
-    RULE 4 : IF throughput_quality IS medio AND buffer_size IS bajo THEN internet_performance IS bajo;
-    RULE 5 : IF throughput_quality IS medio AND buffer_size IS medio THEN internet_performance IS medio;
-    RULE 6 : IF throughput_quality IS medio AND buffer_size IS alto THEN internet_performance IS alto;
+    RULE 4 : IF throughput_quality IS medio OR buffer_size IS bajo THEN internet_performance IS bajo;
+    RULE 5 : IF throughput_quality IS medio OR buffer_size IS medio THEN internet_performance IS medio;
+    RULE 6 : IF throughput_quality IS medio OR buffer_size IS alto THEN internet_performance IS alto;
 
-    RULE 7 : IF throughput_quality IS alto AND buffer_size IS bajo THEN internet_performance IS medio;
-    RULE 8 : IF throughput_quality IS alto AND buffer_size IS medio THEN internet_performance IS alto;
-    RULE 9 : IF throughput_quality IS alto AND buffer_size IS alto THEN internet_performance IS alto;
+    RULE 7 : IF throughput_quality IS alto OR buffer_size IS bajo THEN internet_performance IS medio;
+    RULE 8 : IF throughput_quality IS alto OR buffer_size IS medio THEN internet_performance IS alto;
+    RULE 9 : IF throughput_quality IS alto OR buffer_size IS alto THEN internet_performance IS alto;
 END_RULEBLOCK
 
 END_FUNCTION_BLOCK

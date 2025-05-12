@@ -3,6 +3,8 @@ import fuzzy.app.Controllers.UIController;
 import javax.swing.*;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
+import java.awt.event.ActionListener;
+import java.awt.event.ActionEvent;
 import java.awt.*;
 
 public class UserInterface extends JFrame {
@@ -22,6 +24,7 @@ public class UserInterface extends JFrame {
     private ImageIcon[] resolutionImages;
     private ChangeListener sliderChangeListener;
     private UIController controller;
+    private JButton chartsButton;
 
     public UserInterface(UIController controller, int numberOfResolutions, double downloadSpeed, double packetNotLoss, double bufferSize, int viewportSize) {
         this.controller = controller;
@@ -54,10 +57,12 @@ public class UserInterface extends JFrame {
         // Initialize resolution display
         resolutionLabel = new JLabel("Current Resolution: Calculating...", SwingConstants.CENTER);
         resolutionImageLabel = new JLabel("", SwingConstants.CENTER);
+        chartsButton = new JButton("Show Charts");
 
         //Add resolution display to resolutionPanel
         resolutionPanel.add(resolutionImageLabel, BorderLayout.CENTER);
         resolutionPanel.add(resolutionLabel, BorderLayout.SOUTH);
+        resolutionPanel.add(chartsButton, BorderLayout.EAST);
 
         //Initialize labels
         downloadSpeedLabel = new JLabel("Download Speed: " + downloadSpeed + " Kbps", SwingConstants.CENTER);
@@ -87,6 +92,13 @@ public class UserInterface extends JFrame {
                 controller.updateResolution(downloadSpeedSlider.getValue(), packetNotLossSlider.getValue(), bufferSizeSlider.getValue(), viewportSizeSlider.getValue());
             }
         };
+
+        chartsButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                controller.getCharts();
+            }
+        });
 
         //Add change listener to sliders
         downloadSpeedSlider.addChangeListener(sliderChangeListener);

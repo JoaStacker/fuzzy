@@ -16,7 +16,11 @@ public class UIController {
     }
 
     public void updateResolution(double downloadSpeedKbps, double packetNotLoss, double bufferSize, int viewportSize) {
-        RESOLUTIONS resolution = resolutionFLS.run(downloadSpeedKbps / 1000, packetNotLoss, bufferSize, viewportSize);
+        RESOLUTIONS resolution = resolutionFLS.run(downloadSpeedKbps, packetNotLoss, bufferSize, viewportSize);
         ui.updateResolution(resolution.toString(), resolution.ordinal());
+    }
+
+    public void getCharts(){
+        resolutionFLS.getCharts();
     }
 }
