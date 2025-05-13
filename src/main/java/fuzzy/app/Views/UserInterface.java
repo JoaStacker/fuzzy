@@ -46,7 +46,7 @@ public class UserInterface extends JFrame {
         downloadSpeedSlider = createSlider("Download Speed (Kbps)", 0, 5000, (int) downloadSpeed);
         packetNotLossSlider = createSlider("Packet Not Loss (%)", 0, 100, (int) packetNotLoss);
         bufferSizeSlider = createSlider("Buffer Size (s)", 0, 40, (int) bufferSize);
-        viewportSizeSlider = createSlider("Viewport Size (px)", 0, 2000, viewportSize);
+        viewportSizeSlider = createSlider("Viewport Size (px)", 0, 1200, viewportSize);
 
         //Add sliders to slidersPanel
         slidersPanel.add(downloadSpeedSlider);
