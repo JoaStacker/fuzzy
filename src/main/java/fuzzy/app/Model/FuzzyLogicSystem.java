@@ -32,7 +32,7 @@ public class FuzzyLogicSystem {
         this.outputName = outputName;
 
 
-        FIS fis = FIS.load("fcl/" + fileNameWithoutExtension + ".fcl", true);
+        FIS fis = FIS.load(getClass().getClassLoader().getResourceAsStream("fcl/" + fileNameWithoutExtension + ".fcl"), true);
         // Error while loading?
         if( fis == null ) {
             throw new IllegalArgumentException("Can't load file: '" + fileNameWithoutExtension + "'");
