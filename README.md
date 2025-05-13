@@ -7,3 +7,9 @@ El proyecto usa maven para la compilación del proyecto de Java. Estuvimos usand
 ```bash
 mvn exec:java -Dexec.mainClass="fuzzy.app.Main"
 ```
+
+O directamente desde el package con el Java run enviroment que tenga instalado.
+
+```bash
+java -jar Fuzzy-1.0-SNAPSHOT.jar
+```
