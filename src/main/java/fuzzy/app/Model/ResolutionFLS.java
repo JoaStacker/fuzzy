@@ -39,16 +39,16 @@ public class ResolutionFLS {
     }
 
     private RESOLUTIONS getResolution(double result) {
-        if (result >= 0 && result <= 300) {
+        if (result >= 0 && result < 360) {
             return RESOLUTIONS.VERY_LOW;
         }
-        if (result > 300 && result <= 420) {
+        if (result >= 360 && result < 480) {
             return RESOLUTIONS.LOW;
         }
-        if (result > 420 && result <= 590) {
+        if (result >= 480 && result < 720) {
             return RESOLUTIONS.MEDIUM;
         }
-        if (result > 590 && result <= 900) {
+        if (result >= 720 && result < 1080) {
             return RESOLUTIONS.HIGH;
         }
         return RESOLUTIONS.VERY_HIGH;
